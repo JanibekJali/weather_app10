@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/app/presentation/pages/search_page.dart';
 import 'package:weather_app/app/utils/constants/app_colors/app_colors.dart';
 import 'package:weather_app/app/utils/constants/text_styles/app_text_styles.dart';
 
@@ -19,11 +20,17 @@ class HomePage extends StatelessWidget {
             size: 50,
           ),
         ),
-        title: const Padding(
-          padding: EdgeInsets.only(left: 280),
-          child: Icon(
-            Icons.location_city,
-            size: 50,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 280),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchPage()));
+            },
+            child: const Icon(
+              Icons.location_city,
+              size: 50,
+            ),
           ),
         ),
       ),
