@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/app/presentation/pages/home_page.dart';
+
+import 'app/presentation/pages/home_page.dart';
 
 void main() {
   runApp(
@@ -15,6 +16,7 @@ class WeatherApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
+      // home: Misal(),
     );
   }
 }

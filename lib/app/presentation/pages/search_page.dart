@@ -59,6 +59,7 @@ class SearchPage extends StatelessWidget {
             ),
             OutlinedButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   FocusManager.instance.primaryFocus?.unfocus();
                   log('controller =====> ${_controller.text}');
                 },
