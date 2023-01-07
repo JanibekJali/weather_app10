@@ -16,7 +16,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _cityName = 'Talas';
+  String _cityName = '';
+  dynamic _temp = '';
+  dynamic _humidity = '';
+  dynamic _pressure = '';
+  dynamic _feels_like = '';
+  dynamic _wind;
   @override
   void initState() {
     log('Init State ===> ');
@@ -30,24 +35,35 @@ class _HomePageState extends State<HomePage> {
     final position = await _getPosition();
     await getWeatherByLocation(position);
     // log('position.latitude ====>${position.latitude} ');
-    // log('position.latitude ====>${position.longitude} ');
+    // log('position.longitude ====>${position.longitude} ');
   }
 
   Future<Map<String, dynamic>> getWeatherByLocation(Position position) async {
     final http = Client();
     Uri uri = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?lat=40.500511&lon=72.8074491&appid=c3aa0301d9353c81b3f8e8254ca12e23');
+        'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=c3aa0301d9353c81b3f8e8254ca12e23');
     try {
       var response = await http.get(uri);
       // log('jooop ====> ${response.data}');
       final maalymat = jsonDecode(response.body);
       _cityName = maalymat['name'];
+
+      final kelvin = maalymat['main']['temp'];
+      _humidity = maalymat['main']['humidity'];
+      _pressure = maalymat['main']['pressure'];
+      _feels_like = maalymat['main']['feels_like'];
+      _wind = maalymat['wind']['speed'];
+      _temp = (kelvin - 273.15).toStringAsFixed(0);
       setState(() {});
       return maalymat;
-    } catch (e) {
-      throw Exception(e);
+    } catch (kata) {
+      throw Exception(kata);
     }
   }
+  // get
+  // post + get
+  // put - update
+  // delete
 
   Future<Position> _getPosition() async {
     bool serviceEnabled;
@@ -117,18 +133,19 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(fontSize: 70, color: AppColors.white),
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 150,
             left: 50,
-            child: Text('8\u00B0  ', style: AppTextStyles.text100White),
+            child: Text('$_temp\u00B0  ', style: AppTextStyles.text100White),
           ),
-          const Positioned(
+          Positioned(
             top: 400,
             right: 30,
             child: Text('''
-              Description 
-              Description
-              Description 
+              Humidity $_humidity 
+              Pressure $_pressure
+              Feels_like $_feels_like
+              Wind $_wind
               ''', style: AppTextStyles.text40White),
           ),
           Positioned(
