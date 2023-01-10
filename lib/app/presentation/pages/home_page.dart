@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:weather_app/app/data/services/geo_location.dart';
 import 'package:weather_app/app/presentation/pages/search_page.dart';
 import 'package:weather_app/app/utils/constants/app_colors/app_colors.dart';
 import 'package:weather_app/app/utils/constants/text_styles/app_text_styles.dart';
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   showWearherByLocation() async {
-    final position = await _getPosition();
+    final position = await GeoLocation().getPosition();
     await getWeatherByLocation(position);
     // log('position.latitude ====>${position.latitude} ');
     // log('position.longitude ====>${position.longitude} ');
@@ -60,35 +61,11 @@ class _HomePageState extends State<HomePage> {
       throw Exception(kata);
     }
   }
+
   // get
   // post + get
   // put - update
   // delete
-
-  Future<Position> _getPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +85,12 @@ class _HomePageState extends State<HomePage> {
         title: Padding(
           padding: const EdgeInsets.only(left: 280),
           child: InkWell(
-            onTap: () {
-              Navigator.push(context,
+            onTap: () async {
+              var ekinchiBettegiJazilganShaardinAty = await Navigator.push(
+                  context,
                   MaterialPageRoute(builder: (context) => SearchPage()));
+              await getWeatherByCityName(ekinchiBettegiJazilganShaardinAty);
+              setState(() {});
             },
             child: const Icon(
               Icons.location_city,
